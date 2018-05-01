@@ -1,0 +1,7 @@
+{
+  "lambda": {
+    "role": "login-user-executor",
+    "name": "login-user",
+    "region": "us-west-2"
+  }
+}

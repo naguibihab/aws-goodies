@@ -1,0 +1,21 @@
+{
+  "name": "login-user",
+  "version": "1.0.0",
+  "description": "This function checks if the username and password exist in the database or not.",
+  "main": "index.js",
+  "scripts": {
+    "create": "claudia create --region us-west-2 --handler main.handler --version dev --timeout 300 --profile tribees",
+    "release": "claudia set-version --version production --profile tribees",
+    "deploy": "claudia update --version dev --profile tribees",
+    "test": "claudia test-lambda --event event.json --profile tribees",
+    "logs": "aws logs filter-log-events --log-group-name /aws/lambda/login-user --profile tribees",
+    "smart-deploy": "npm run deploy && npm run test && npm run logs",
+    "recreate": "claudia destroy --profile tribees && npm run create",
+    "smart-recreate": "npm run recreate && npm run test && npm run logs"
+  },
+  "author": "Naguib Ihab",
+  "license": "ISC",
+  "dependencies": {
+    "mysql": "^2.15.0"
+  }
+}

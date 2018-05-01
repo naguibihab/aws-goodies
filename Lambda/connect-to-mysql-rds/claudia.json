@@ -1,0 +1,11 @@
+{
+  "lambda": {
+    "role": "connect-to-mysql-rds-executor",
+    "name": "connect-to-mysql-rds",
+    "region": "us-west-2"
+  },
+  "api": {
+    "id": "d5k13pry03",
+    "module": "main"
+  }
+}

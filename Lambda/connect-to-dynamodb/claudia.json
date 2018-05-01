@@ -1,0 +1,11 @@
+{
+  "lambda": {
+    "role": "connect-to-dynamodb-executor",
+    "name": "connect-to-dynamodb",
+    "region": "us-west-2"
+  },
+  "api": {
+    "id": "p487ywig79",
+    "module": "main"
+  }
+}

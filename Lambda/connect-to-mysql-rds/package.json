@@ -1,0 +1,23 @@
+{
+  "name": "connect-to-mysql-rds",
+  "version": "1.0.0",
+  "description": "a lambda function to connect to RDS and handle any query requested from other lambda functions",
+  "main": "main.js",
+  "scripts": {
+    "create": "claudia create --region us-west-2 --version dev --api-module main --timeout 300 --set-env-from-json env.json --profile tribees",
+    "release": "claudia set-version --version production --profile tribees",
+    "deploy": "claudia update --version dev --set-env-from-json env.json --profile tribees",
+    "test": "claudia test-lambda --profile tribees",
+    "logs": "aws logs filter-log-events --log-group-name /aws/lambda/connect-to-mysql-rds --profile tribees",
+    "smart-deploy": "npm run deploy && npm run test && npm run logs",
+    "recreate": "claudia destroy --profile tribees && npm run create",
+    "smart-recreate": "npm run recreate && npm run test && npm run logs"
+  },
+  "author": "Naguib Ihab",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "claudia-api-builder": "^3.0.1",
+    "mysql": "^2.15.0"
+  }
+}

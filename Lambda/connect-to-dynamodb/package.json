@@ -1,0 +1,23 @@
+{
+  "name": "connect-to-dynamodb",
+  "version": "1.0.0",
+  "description": "Connecting to DynamoDB and running some queries",
+  "main": "index.js",
+  "scripts": {
+    "create": "claudia create --region us-west-2 --api-module main --version dev --policies policies/*.json --set-env-from-json env.json --profile tribees",
+    "release": "claudia set-version --version production --profile tribees",
+    "deploy": "claudia update --version dev --set-env-from-json env.json --profile tribees",
+    "test": "claudia test-lambda --profile tribees",
+    "logs": "aws logs filter-log-events --log-group-name /aws/lambda/connect-to-dynamodb --profile tribees",
+    "smart-deploy": "npm run deploy && npm run test && npm run logs",
+    "recreate": "claudia destroy --profile tribees && npm run create",
+    "smart-recreate": "npm run recreate && npm run test && npm run logs"
+  },
+  "author": "Naguib Ihab",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.192.0",
+    "claudia-api-builder": "^3.0.1",
+    "uuid": "^3.2.1"
+  }
+}
