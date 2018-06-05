@@ -55,14 +55,14 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     Region: aws.String("us-west-2")},
   )
   if err != nil {
-    serverError(err)
+    return serverError(err)
   }
   
   // Get body of request
   requestBody := new(RequestBody)
   err = json.Unmarshal([]byte(request.Body), requestBody)
   if err != nil {
-    serverError(err)
+    return serverError(err)
   }
   
   // Create DynamoDB client
@@ -70,8 +70,6 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   
   cartSession := new(CartSession)
   itemInventory := new(ItemInventory)
-  
-  errorResponse := ""
   
   // ************
   // Operation
@@ -81,7 +79,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     cartString := getUrl("/cart/"+request.PathParameters["session"])
     err := json.Unmarshal(cartString, cartSession)
     if err != nil {
-      serverError(err)
+      return serverError(err)
     }
     
     if cartSession.Session == "" {
@@ -106,34 +104,25 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   inventoryString := getUrl("/item/"+requestBody.Name)
   err = json.Unmarshal(inventoryString, itemInventory)
   if err != nil {
-    serverError(err)
+    return serverError(err)
   }
   
   if itemInventory.Stock < (requestBody.Quantity + itemCart.Quantity) {
-    log.Println(itemInventory.Stock)
-    log.Println(requestBody.Quantity + itemCart.Quantity)
-    log.Println("Not enough stock")
-    errorResponse = "Not enough stock"
+    return notEnoughStockError()
   }
   
   // ************
   // Return
   // ************
-  returnBody := ""
-  
-  if errorResponse == "" {   
-    js, err := json.Marshal(cartSession)
-    if err != nil {
-      return serverError(err)
-    }
-    returnBody = string(js)
-  } else {
-    returnBody = errorResponse
+   
+  js, err := json.Marshal(cartSession)
+  if err != nil {
+    return serverError(err)
   }
   
   return events.APIGatewayProxyResponse{
     Headers:    map[string]string{"content-type": "application/json"},
-    Body:       returnBody,
+    Body:       string(js),
     StatusCode: 200,
   }, nil
 }
@@ -195,6 +184,14 @@ func serverError(err error) (events.APIGatewayProxyResponse, error) {
   return events.APIGatewayProxyResponse{
       StatusCode: http.StatusInternalServerError,
       Body:       http.StatusText(http.StatusInternalServerError),
+  }, nil
+}
+
+func notEnoughStockError() (events.APIGatewayProxyResponse, error) {
+  log.Println("Not enough stock")
+  return events.APIGatewayProxyResponse{
+      StatusCode: http.StatusForbidden,
+      Body:       http.StatusText(http.StatusForbidden),
   }, nil
 }
 
