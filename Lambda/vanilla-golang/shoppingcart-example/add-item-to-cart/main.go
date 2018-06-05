@@ -69,7 +69,9 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   svc := dynamodb.New(sess)
   
   cartSession := new(CartSession)
-//   itemInventory := new(ItemInventory)
+  itemInventory := new(ItemInventory)
+  
+  errorResponse := ""
   
   // ************
   // Operation
@@ -93,35 +95,45 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   
   // Step 2.1: Check if inventory has enough stock
   // Get the item from cart array
-//   itemCart := new(ItemCart)
-//   for _, item := range cartSession.Cart {
-//     if item.Name == requestBody.Name {
-//         itemCart = &item
-//     }
-//   }
+  itemCart := new(ItemCart)
+  for _, item := range cartSession.Cart {
+    if item.Name == requestBody.Name {
+        itemCart = &item
+    }
+  }
   
-//   // Get the item from inventory
-//   inventoryString := getUrl("/inventory/"+requestBody.Name)
-//   err = json.Unmarshal(inventoryString, itemInventory)
-//   if err != nil {
-//     serverError(err)
-//   }
+  // Get the item from inventory
+  inventoryString := getUrl("/item/"+requestBody.Name)
+  err = json.Unmarshal(inventoryString, itemInventory)
+  if err != nil {
+    serverError(err)
+  }
   
-//   if itemInventory.Stock < (requestBody.Quantity + itemCart.Quantity) {
-//     log.Println("Not enough stock")
-//   }
+  if itemInventory.Stock < (requestBody.Quantity + itemCart.Quantity) {
+    log.Println(itemInventory.Stock)
+    log.Println(requestBody.Quantity + itemCart.Quantity)
+    log.Println("Not enough stock")
+    errorResponse = "Not enough stock"
+  }
   
   // ************
   // Return
   // ************
-  js, err := json.Marshal(cartSession)
-  if err != nil {
-    return serverError(err)
+  returnBody := ""
+  
+  if errorResponse == "" {   
+    js, err := json.Marshal(cartSession)
+    if err != nil {
+      return serverError(err)
+    }
+    returnBody = string(js)
+  } else {
+    returnBody = errorResponse
   }
   
   return events.APIGatewayProxyResponse{
     Headers:    map[string]string{"content-type": "application/json"},
-    Body:       string(js),
+    Body:       returnBody,
     StatusCode: 200,
   }, nil
 }
