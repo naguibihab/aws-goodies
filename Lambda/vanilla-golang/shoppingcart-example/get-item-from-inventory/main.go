@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
   "log"
+  "net/http"
   "encoding/json"
 	"github.com/aws/aws-lambda-go/lambda"
   "github.com/aws/aws-lambda-go/events"
@@ -40,8 +40,8 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   })
   
   if err != nil {
-    fmt.Println(err.Error())
-//     return nil, err
+    log.Println(err.Error())
+    return serverError(err)
   }
   
   item := Item{}
@@ -49,40 +49,32 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   err = dynamodbattribute.UnmarshalMap(result.Item, &item)
   
   if err != nil {
-    panic(fmt.Sprintf("Failed to unmarshal Record, %v", err))
-//     return nil, err
+    log.Printf("Failed to unmarshal Record")
+    return serverError(err)
   }
 
   if item.Name == "" {
-      fmt.Println("Could not find item")
-//       return nil, nil
+      log.Println("Could not find item")
   }
   
-  fmt.Println("Found item:")
-  fmt.Println("Name:  ", item.Name)
-  fmt.Println("Stock: ", item.Stock)
-  fmt.Println("Price:  ", item.Price)
-  
   js, err := json.Marshal(item)
-//   if err != nil {
-//     return serverError(err)
-//   }
-  
-//   func serverError(err error) (events.APIGatewayProxyResponse, error) {
-//     errorLogger.Println(err.Error())
-
-//     return events.APIGatewayProxyResponse{
-//         StatusCode: http.StatusInternalServerError,
-//         Body:       http.StatusText(http.StatusInternalServerError),
-//     }, nil
-//   }
+  if err != nil {
+    return serverError(err)
+  }
   
   return events.APIGatewayProxyResponse{
     Headers:    map[string]string{"content-type": "application/json"},
     Body:       string(js),
     StatusCode: 200,
   }, nil
-  
+}
+
+func serverError(err error) (events.APIGatewayProxyResponse, error) {
+  log.Println(err.Error())
+  return events.APIGatewayProxyResponse{
+      StatusCode: http.StatusInternalServerError,
+      Body:       http.StatusText(http.StatusInternalServerError),
+  }, nil
 }
 
 func main() {
