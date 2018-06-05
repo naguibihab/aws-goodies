@@ -50,7 +50,7 @@ type CartSession struct {
   Session string `json:"session"`
   Cart []ItemCart `json:"cart"`
   Total float64 `json:"total"`
-  PromosApplied []Promotion `json:"promos"`
+  Promos []Promotion `json:"promos"`
 }
 
 type RequestBody struct {
@@ -155,6 +155,18 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   OUTER:
   for i, item := range cartSession.Cart {
     for _, promo := range promotions {
+      // Skip applied promos
+      alreadyApplied := false
+      for _, appliedPromo := range cartSession.Promos {
+        if promo.UUID == appliedPromo.UUID {
+          alreadyApplied = true
+          break
+        } 
+      }
+      if alreadyApplied {
+        continue
+      }
+      
       if item.Name == promo.Affected.Name {
         // If an item in the cart can be affected by the promo
         // then start investigating if we have the affectee
@@ -165,6 +177,8 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
           } else {
             cartSession.Cart[i].Cost = promo.Affected.CostFixed
           }
+          // Add promo to cart
+          cartSession.Promos = append(cartSession.Promos, promo)
           continue OUTER
         } else {
           for _, subItem := range cartSession.Cart {
@@ -176,12 +190,24 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
               } else {
                 cartSession.Cart[i].Cost = promo.Affected.CostFixed
               }
+              // Add promo to cart
+              cartSession.Promos = append(cartSession.Promos, promo)
               continue OUTER
             }
           }
         }
       }
     }
+  }
+  
+  // Step 4: Calculate total cost
+  // Even though this iteration already happened in another area
+  // it is safer to keep different functionalities separate
+  // and avoid spaghetti code as long as it does not have a big
+  // impact on the performance
+  cartSession.Total = 0
+  for _, item := range cartSession.Cart {
+    cartSession.Total += (item.Cost * float64(item.Quantity))
   }
   
   // ************
