@@ -63,7 +63,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   // Create DynamoDB client
   svc := dynamodb.New(sess)
   
-  cartSession := CartSession{}
+  cartSession := new(CartSession)
   
   // ************
   // Operation
@@ -73,17 +73,17 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   if request.PathParameters["session"] != "" {
     log.Println("Reach")
     cartString := getUrl("/cart/"+request.PathParameters["session"])
-    err := json.Unmarshal(cartString, &cartSession)
+    err := json.Unmarshal(cartString, cartSession)
     if err != nil {
       serverError(err)
     }
     
 //     emptyUUID, err := uuid.FromString("00000000-0000-0000-0000-000000000000")
     if cartSession.Session == "" {
-      addCart(svc)
+      cartSession, err = addCart(svc)
     }
   } else {
-    addCart(svc)
+    cartSession, err = addCart(svc)
   }
   
   // Step 2: 
