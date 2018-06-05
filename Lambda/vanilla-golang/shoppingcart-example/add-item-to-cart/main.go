@@ -138,7 +138,6 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   }
   
   // Step 2.2: Update cart
-  log.Println("itemIndexInCart: "+string(itemIndexInCart))
   if itemIndexInCart > -1 {
     cartSession.Cart[itemIndexInCart].Quantity += itemCart.Quantity
   } else {
@@ -166,9 +165,12 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
           break
         } 
       }
+      log.Println("Iterating over promo ",promo,alreadyApplied)
       if alreadyApplied {
+        alreadyApplied = false
         continue
       }
+      log.Println("Reach")
       
       if item.Name == promo.Affected.Name {
         // If an item in the cart can be affected by the promo
@@ -181,6 +183,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
             cartSession.Cart[i].Cost = promo.Affected.CostFixed
           }
           // Add promo to cart
+          log.Println("Applying promo ",promo)
           cartSession.Promos = append(cartSession.Promos, promo)
           continue OUTER
         } else {
@@ -194,7 +197,9 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
                 cartSession.Cart[i].Cost = promo.Affected.CostFixed
               }
               // Add promo to cart
+              log.Println("Applying promo ",promo,cartSession.Promos)
               cartSession.Promos = append(cartSession.Promos, promo)
+              log.Println("Applied promo ",promo,cartSession.Promos)
               continue OUTER
             }
           }
