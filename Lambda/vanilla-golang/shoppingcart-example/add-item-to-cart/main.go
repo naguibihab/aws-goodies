@@ -135,15 +135,17 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   
   // Step 3: Apply promotions
   
+  // Get all promotions
+  var promotions []Promotion
+  promoString := getUrl("/promo/")
+  err = json.Unmarshal(promoString, &promotions)
+  if err != nil {
+    return serverError(err)
+  }
+  log.Printf("%#v\n",promotions)
+  
   for _, item := range cartSession.Cart {
-    promotion := new(Promotion)
-    promoString := getUrl("/promo/"+item.Name)
-    err = json.Unmarshal(promoString, promotion)
-    if err != nil {
-      return serverError(err)
-    }
-    
-    // Do something here
+    // Do stuff here
   }
   
   // ************
