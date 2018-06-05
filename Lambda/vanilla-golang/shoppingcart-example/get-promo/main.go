@@ -40,6 +40,11 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   sess, err := session.NewSession(&aws.Config{
     Region: aws.String("us-west-2")},
   )
+  if err != nil {
+    return serverError(err)
+  }
+  
+  returnBody := ""
   
   // Create DynamoDB client
   svc := dynamodb.New(sess)
@@ -47,43 +52,75 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   // ************
   // Operation
   // ************
-  result, err := svc.GetItem(&dynamodb.GetItemInput{
-    TableName: aws.String("Promotion"),
-    Key: map[string]*dynamodb.AttributeValue{
-      "uuid": {
-          S: aws.String(request.PathParameters["uuid"]),
+  if request.PathParameters["uuid"] != "" {
+    result, err := svc.GetItem(&dynamodb.GetItemInput{
+      TableName: aws.String("Promotion"),
+      Key: map[string]*dynamodb.AttributeValue{
+        "uuid": {
+            S: aws.String(request.PathParameters["uuid"]),
+        },
       },
-    },
-  })
-  if err != nil {
-    log.Println(err.Error())
-    return serverError(err)
-  }
-  
-  promotion := Promotion{}
-  
-  err = dynamodbattribute.UnmarshalMap(result.Item, &promotion)
-  if err != nil {
-    log.Printf("Failed to unmarshal Record")
-    return serverError(err)
-  }
+    })
+    if err != nil {
+      return serverError(err)
+    }
 
-  if promotion.UUID == "" {
-     log.Println("Could not find promotion, getting all promotions")
-     
+    promotion := Promotion{}
+
+    err = dynamodbattribute.UnmarshalMap(result.Item, &promotion)
+    if err != nil {
+      log.Printf("Failed to unmarshal Record")
+      return serverError(err)
+    }
+
+    if promotion.UUID == "" {
+      log.Println("Could not find promotion")
+    }
+    
+    // Preparing returned data
+    js, err := json.Marshal(promotion)
+    if err != nil {
+      return serverError(err)
+    }
+    returnBody = string(js)
+  } else {
+    // Get all promotions
+    params := &dynamodb.ScanInput{
+        TableName:                 aws.String("Promotion"),
+    }
+    result, err := svc.Scan(params)
+    if err != nil {
+      return serverError(err)
+    }
+    
+    var promotions []Promotion
+    
+    for _, i := range result.Items {
+      promotion := Promotion{}
+      
+      err = dynamodbattribute.UnmarshalMap(i, &promotion)
+      if err != nil {
+        return serverError(err)
+      }
+      
+      promotions = append(promotions, promotion)
+    }
+    
+    // Preparting returned data
+    js, err := json.Marshal(promotions)
+    if err != nil {
+      return serverError(err)
+    }
+    returnBody = string(js)
   }
   
   // ************
   // Return
   // ************
-  js, err := json.Marshal(promotion)
-  if err != nil {
-    return serverError(err)
-  }
   
   return events.APIGatewayProxyResponse{
     Headers:    map[string]string{"content-type": "application/json"},
-    Body:       string(js),
+    Body:       returnBody,
     StatusCode: 200,
   }, nil
 }
