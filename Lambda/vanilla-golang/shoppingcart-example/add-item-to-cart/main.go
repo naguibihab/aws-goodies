@@ -28,8 +28,21 @@ type ItemCart struct {
   Quantity int `json:"quantity"`
 }
 
+type Affectee struct {
+  Name string `json:"name"`
+  Quantity int `json:"quantity"`
+}
+
+type Affected struct {
+  Name  string `json:"name"`
+  CostPtg float64 `json:"costPtg"`
+  CostFixed float64 `json:"costFixed"`
+}
+
 type Promotion struct {
   UUID string `json:"uuid"`
+  Affectee Affectee `json:"affectee"`
+  Affected Affected `json:"affected"`
 }
 
 type CartSession struct {
@@ -119,6 +132,15 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   
   // Step 2.2: Update cart
   cartSession.Cart = append(cartSession.Cart, *itemCart)
+  
+  // Step 3: Apply promotions
+//   for _, item = range cartSession.Cart {
+//     promoString := getUrl("/promo/"+item.Name)
+//     err = json.Unmarshal(inventoryString, itemInventory)
+//     if err != nil {
+//       return serverError(err)
+//     }
+//   }
   
   // ************
   // Return
