@@ -16,6 +16,7 @@ import (
 type Item struct {
   Name string `json:"name"`
   Quantity int `json:"quantity"`
+  Cost float64 `json:"cost"`
 }
 
 type Promotion struct {
