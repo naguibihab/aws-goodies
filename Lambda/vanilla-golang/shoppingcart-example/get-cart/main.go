@@ -15,7 +15,7 @@ import (
 
 type Item struct {
   Name string `json:"name"`
-  Quantity string `json:"quantity"`
+  Quantity int `json:"quantity"`
 }
 
 type Promotion struct {
@@ -54,7 +54,6 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
       },
     },
   })
-  
   if err != nil {
     log.Println(err.Error())
     return serverError(err)
@@ -63,7 +62,6 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   cartSession := CartSession{}
   
   err = dynamodbattribute.UnmarshalMap(result.Item, &cartSession)
-  
   if err != nil {
     log.Printf("Failed to unmarshal Record")
     return serverError(err)

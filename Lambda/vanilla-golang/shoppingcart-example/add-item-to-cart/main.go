@@ -5,7 +5,6 @@ import (
   "net/http"
   "io/ioutil"
   "encoding/json"
-//   "encoding/hex"
   "github.com/satori/go.uuid"
 	"github.com/aws/aws-lambda-go/lambda"
   "github.com/aws/aws-lambda-go/events"
@@ -26,7 +25,7 @@ type ItemInventory struct {
 
 type ItemCart struct {
   Name string `json:"name"`
-  Quantity string `json:"quantity"`
+  Quantity int `json:"quantity"`
 }
 
 type Promotion struct {
@@ -40,11 +39,10 @@ type CartSession struct {
   PromosApplied []Promotion `json:"promos"`
 }
 
-// type Request struct {
-//   Session string `json:"session"`
-//   Name string `json:"name"`
-//   Quantity int `json:"quantity"`
-// }
+type RequestBody struct {
+  Name string `json:"name"`
+  Quantity int `json:"quantity"`
+}
 
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
   
@@ -60,25 +58,30 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     serverError(err)
   }
   
+  // Get body of request
+  requestBody := new(RequestBody)
+  err = json.Unmarshal([]byte(request.Body), requestBody)
+  if err != nil {
+    serverError(err)
+  }
+  
   // Create DynamoDB client
   svc := dynamodb.New(sess)
   
   cartSession := new(CartSession)
+//   itemInventory := new(ItemInventory)
   
   // ************
   // Operation
   // ************
-  
-  // Step 1: Find existing session
+  // Step 1: Find existing session or create one
   if request.PathParameters["session"] != "" {
-    log.Println("Reach")
     cartString := getUrl("/cart/"+request.PathParameters["session"])
     err := json.Unmarshal(cartString, cartSession)
     if err != nil {
       serverError(err)
     }
     
-//     emptyUUID, err := uuid.FromString("00000000-0000-0000-0000-000000000000")
     if cartSession.Session == "" {
       cartSession, err = addCart(svc)
     }
@@ -86,7 +89,27 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     cartSession, err = addCart(svc)
   }
   
-  // Step 2: 
+  // Step 2: Modify cart array
+  
+  // Step 2.1: Check if inventory has enough stock
+  // Get the item from cart array
+//   itemCart := new(ItemCart)
+//   for _, item := range cartSession.Cart {
+//     if item.Name == requestBody.Name {
+//         itemCart = &item
+//     }
+//   }
+  
+//   // Get the item from inventory
+//   inventoryString := getUrl("/inventory/"+requestBody.Name)
+//   err = json.Unmarshal(inventoryString, itemInventory)
+//   if err != nil {
+//     serverError(err)
+//   }
+  
+//   if itemInventory.Stock < (requestBody.Quantity + itemCart.Quantity) {
+//     log.Println("Not enough stock")
+//   }
   
   // ************
   // Return
@@ -104,7 +127,6 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 }
 
 func addCart(svc *dynamodb.DynamoDB) (*CartSession, error) {
-  log.Println("Reach")
   // Create UUID for new session
   uid := uuid.Must(uuid.NewV4())
   
