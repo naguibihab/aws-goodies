@@ -145,37 +145,37 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   // Step 3: Apply promotions
   
   // Get all promotions
-//   var promotions []Promotion
-//   promoString := getUrl("/promo/")
-//   err = json.Unmarshal(promoString, &promotions)
-//   if err != nil {
-//     return serverError(err)
-//   }
+  var promotions []Promotion
+  promoString := getUrl("/promo/")
+  err = json.Unmarshal(promoString, &promotions)
+  if err != nil {
+    return serverError(err)
+  }
   
-//   for i, item := range cartSession.Cart {
-//     for _, promo := range promotions {
-//       if item.Name == promo.Affected.Name {
-//         // If an item in the cart can be affected by the promo
-//         // then start investigating if we have the affectee
-//         if item.Name == promo.Affectee.Name {
-//           // If the item is the affected and affectee
-//           // TODO
-//         } else {
-//           for __, subItem := range cartSession.Cart {
-//             if subItem.Name == promo.Affectee.Name {
-//               // We have both the affected & affectee
-//               // time to apply the promo affect
-//               if promo.Affected.costPtg != 0 {
-//                 cartSession.Cart[i].Cost *= promo.Affected.costPtg
-//               } else {
-//                 cartSession.Cart[i].Cost = promo.Affected.costFixed
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
+  for i, item := range cartSession.Cart {
+    for _, promo := range promotions {
+      if item.Name == promo.Affected.Name {
+        // If an item in the cart can be affected by the promo
+        // then start investigating if we have the affectee
+        if item.Name == promo.Affectee.Name {
+          // If the item is the affected and affectee
+          // TODO
+        } else {
+          for _, subItem := range cartSession.Cart {
+            if subItem.Name == promo.Affectee.Name {
+              // We have both the affected & affectee
+              // time to apply the promo affect
+              if promo.Affected.CostPtg != 0 {
+                cartSession.Cart[i].Cost *= promo.Affected.CostPtg
+              } else {
+                cartSession.Cart[i].Cost = promo.Affected.CostFixed
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   
   // ************
   // Return
