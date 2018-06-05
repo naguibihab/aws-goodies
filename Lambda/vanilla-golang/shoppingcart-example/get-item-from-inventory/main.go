@@ -16,7 +16,7 @@ import (
 type Item struct {
   Name string `json:"name"`
   Stock int `json:"stock"`
-  Price float64 `json:"price"`
+  Cost float64 `json:"cost"`
 }
 
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
