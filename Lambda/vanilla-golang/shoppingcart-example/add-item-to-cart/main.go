@@ -20,12 +20,13 @@ const baseUrl = "https://tpu6ofm6o6.execute-api.us-west-2.amazonaws.com/dev"
 type ItemInventory struct {
   Name string `json:"name"`
   Stock int `json:"stock"`
-  Price float64 `json:"price"`
+  Cost float64 `json:"cost"`
 }
 
 type ItemCart struct {
   Name string `json:"name"`
   Quantity int `json:"quantity"`
+  Cost float64 `json:"cost"`
 }
 
 type Affectee struct {
@@ -106,14 +107,16 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   
   // Step 2.1: Check if inventory has enough stock
   // Get the item from cart array
+  itemIndexInCart := -1
   itemCart := new(ItemCart)
-  for _, item := range cartSession.Cart {
+  for i, item := range cartSession.Cart {
     if item.Name == requestBody.Name {
         itemCart = &item
+        itemIndexInCart = i
     }
   }
   // if item isn't found in cart
-  if itemCart.Name == "" {
+  if itemIndexInCart == -1 {
     itemCart.Name = requestBody.Name
     itemCart.Quantity = requestBody.Quantity
   }
@@ -128,25 +131,51 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   // Check if quantity exceeds stock
   if itemInventory.Stock < (requestBody.Quantity + itemCart.Quantity) {
     return notEnoughStockError()
+  } else {
+    itemCart.Cost = itemInventory.Cost
   }
   
   // Step 2.2: Update cart
-  cartSession.Cart = append(cartSession.Cart, *itemCart)
+  if itemIndexInCart > -1 {
+    cartSession.Cart[itemIndexInCart].Quantity += itemCart.Quantity
+  } else {
+    cartSession.Cart = append(cartSession.Cart, *itemCart)
+  }
   
   // Step 3: Apply promotions
   
   // Get all promotions
-  var promotions []Promotion
-  promoString := getUrl("/promo/")
-  err = json.Unmarshal(promoString, &promotions)
-  if err != nil {
-    return serverError(err)
-  }
-  log.Printf("%#v\n",promotions)
+//   var promotions []Promotion
+//   promoString := getUrl("/promo/")
+//   err = json.Unmarshal(promoString, &promotions)
+//   if err != nil {
+//     return serverError(err)
+//   }
   
-  for _, item := range cartSession.Cart {
-    // Do stuff here
-  }
+//   for i, item := range cartSession.Cart {
+//     for _, promo := range promotions {
+//       if item.Name == promo.Affected.Name {
+//         // If an item in the cart can be affected by the promo
+//         // then start investigating if we have the affectee
+//         if item.Name == promo.Affectee.Name {
+//           // If the item is the affected and affectee
+//           // TODO
+//         } else {
+//           for __, subItem := range cartSession.Cart {
+//             if subItem.Name == promo.Affectee.Name {
+//               // We have both the affected & affectee
+//               // time to apply the promo affect
+//               if promo.Affected.costPtg != 0 {
+//                 cartSession.Cart[i].Cost *= promo.Affected.costPtg
+//               } else {
+//                 cartSession.Cart[i].Cost = promo.Affected.costFixed
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
   
   // ************
   // Return
