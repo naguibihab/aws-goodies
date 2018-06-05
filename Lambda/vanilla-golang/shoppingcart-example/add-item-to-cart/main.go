@@ -152,6 +152,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     return serverError(err)
   }
   
+  OUTER:
   for i, item := range cartSession.Cart {
     for _, promo := range promotions {
       if item.Name == promo.Affected.Name {
@@ -159,7 +160,12 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
         // then start investigating if we have the affectee
         if item.Name == promo.Affectee.Name {
           // If the item is the affected and affectee
-          // TODO
+          if promo.Affected.CostPtg != 0 {
+            cartSession.Cart[i].Cost *= promo.Affected.CostPtg
+          } else {
+            cartSession.Cart[i].Cost = promo.Affected.CostFixed
+          }
+          continue OUTER
         } else {
           for _, subItem := range cartSession.Cart {
             if subItem.Name == promo.Affectee.Name {
@@ -170,6 +176,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
               } else {
                 cartSession.Cart[i].Cost = promo.Affected.CostFixed
               }
+              continue OUTER
             }
           }
         }
