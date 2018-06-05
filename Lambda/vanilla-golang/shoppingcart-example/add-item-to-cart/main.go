@@ -134,13 +134,17 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   cartSession.Cart = append(cartSession.Cart, *itemCart)
   
   // Step 3: Apply promotions
-//   for _, item = range cartSession.Cart {
-//     promoString := getUrl("/promo/"+item.Name)
-//     err = json.Unmarshal(inventoryString, itemInventory)
-//     if err != nil {
-//       return serverError(err)
-//     }
-//   }
+  
+  for _, item := range cartSession.Cart {
+    promotion := new(Promotion)
+    promoString := getUrl("/promo/"+item.Name)
+    err = json.Unmarshal(promoString, promotion)
+    if err != nil {
+      return serverError(err)
+    }
+    
+    // Do something here
+  }
   
   // ************
   // Return
@@ -211,7 +215,7 @@ func getUrl(url string) ([]byte) {
 }
 
 func serverError(err error) (events.APIGatewayProxyResponse, error) {
-  log.Println(err.Error())
+  log.Println("Error: "+err.Error())
   return events.APIGatewayProxyResponse{
       StatusCode: http.StatusInternalServerError,
       Body:       http.StatusText(http.StatusInternalServerError),
