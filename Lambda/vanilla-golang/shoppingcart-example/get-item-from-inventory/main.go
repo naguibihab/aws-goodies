@@ -21,15 +21,21 @@ type Item struct {
 
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
   
+  // ************
+  // Preparation
+  // ************
   log.Printf("Processing Lambda request %s\n", request.PathParameters)
   
   sess, err := session.NewSession(&aws.Config{
     Region: aws.String("us-west-2")},
   )
-
+  
   // Create DynamoDB client
   svc := dynamodb.New(sess)
   
+  // ************
+  // Operation
+  // ************
   result, err := svc.GetItem(&dynamodb.GetItemInput{
     TableName: aws.String("Inventory"),
     Key: map[string]*dynamodb.AttributeValue{
@@ -57,6 +63,9 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
       log.Println("Could not find item")
   }
   
+  // ************
+  // Return
+  // ************
   js, err := json.Marshal(item)
   if err != nil {
     return serverError(err)
