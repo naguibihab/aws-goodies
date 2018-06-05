@@ -34,7 +34,7 @@ type Promotion struct {
 }
 
 type CartSession struct {
-  Session uuid.UUID `json:"session"`
+  Session string `json:"session"`
   Cart []ItemCart `json:"cart"`
   Total float64 `json:"total"`
   PromosApplied []Promotion `json:"promos"`
@@ -78,8 +78,8 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
       serverError(err)
     }
     
-    emptyUUID, err := uuid.FromString("00000000-0000-0000-0000-000000000000")
-    if cartSession.Session == emptyUUID {
+//     emptyUUID, err := uuid.FromString("00000000-0000-0000-0000-000000000000")
+    if cartSession.Session == "" {
       addCart(svc)
     }
   } else {
@@ -109,10 +109,7 @@ func addCart(svc *dynamodb.DynamoDB) (*CartSession, error) {
   uid := uuid.Must(uuid.NewV4())
   
   cartSession := CartSession{
-    Session: uid,
-    Cart: nil,
-    Total: 0,
-    PromosApplied: nil,
+    Session: uid.String(),
   }
   
   // Add new cart session in database
