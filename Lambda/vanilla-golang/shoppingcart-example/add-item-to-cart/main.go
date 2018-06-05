@@ -5,13 +5,15 @@ import (
   "net/http"
   "io/ioutil"
   "encoding/json"
+//   "encoding/hex"
+  "github.com/satori/go.uuid"
 	"github.com/aws/aws-lambda-go/lambda"
   "github.com/aws/aws-lambda-go/events"
   
-//   "github.com/aws/aws-sdk-go/aws"
-//   "github.com/aws/aws-sdk-go/aws/session"
-//   "github.com/aws/aws-sdk-go/service/dynamodb"
-//   "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+  "github.com/aws/aws-sdk-go/aws"
+  "github.com/aws/aws-sdk-go/aws/session"
+  "github.com/aws/aws-sdk-go/service/dynamodb"
+  "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
 
 const baseUrl = "https://tpu6ofm6o6.execute-api.us-west-2.amazonaws.com/dev"
@@ -32,17 +34,17 @@ type Promotion struct {
 }
 
 type CartSession struct {
-  Session string `json:"session"`
+  Session uuid.UUID `json:"session"`
   Cart []ItemCart `json:"cart"`
   Total float64 `json:"total"`
   PromosApplied []Promotion `json:"promos"`
 }
 
-type Request struct {
-  Session string `json:"session"`
-  Name string `json:"name"`
-  Quantity int `json:"quantity"`
-}
+// type Request struct {
+//   Session string `json:"session"`
+//   Name string `json:"name"`
+//   Quantity int `json:"quantity"`
+// }
 
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
   
@@ -51,15 +53,15 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   // ************
   log.Printf("Processing Lambda request %s\n", request.PathParameters)
   
-//   sess, err := session.NewSession(&aws.Config{
-//     Region: aws.String("us-west-2")},
-//   )
-//   if err != nil {
-//     serverError(err)
-//   }
+  sess, err := session.NewSession(&aws.Config{
+    Region: aws.String("us-west-2")},
+  )
+  if err != nil {
+    serverError(err)
+  }
   
   // Create DynamoDB client
-//   svc := dynamodb.New(sess)
+  svc := dynamodb.New(sess)
   
   cartSession := CartSession{}
   
@@ -69,12 +71,22 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   
   // Step 1: Find existing session
   if request.PathParameters["session"] != "" {
+    log.Println("Reach")
     cartString := getUrl("/cart/"+request.PathParameters["session"])
     err := json.Unmarshal(cartString, &cartSession)
     if err != nil {
       serverError(err)
     }
+    
+    emptyUUID, err := uuid.FromString("00000000-0000-0000-0000-000000000000")
+    if cartSession.Session == emptyUUID {
+      addCart(svc)
+    }
+  } else {
+    addCart(svc)
   }
+  
+  // Step 2: 
   
   // ************
   // Return
@@ -89,6 +101,42 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     Body:       string(js),
     StatusCode: 200,
   }, nil
+}
+
+func addCart(svc *dynamodb.DynamoDB) (*CartSession, error) {
+  log.Println("Reach")
+  // Create UUID for new session
+  uid := uuid.Must(uuid.NewV4())
+  
+  cartSession := CartSession{
+    Session: uid,
+    Cart: nil,
+    Total: 0,
+    PromosApplied: nil,
+  }
+  
+  // Add new cart session in database
+  av, err := dynamodbattribute.MarshalMap(cartSession)
+  if err != nil {
+      log.Println("Got error marshalling map")
+      serverError(err)
+      return nil, err
+  }
+  
+  input := &dynamodb.PutItemInput{
+      Item: av,
+      TableName: aws.String("Cart"),
+  }
+  
+  _, err = svc.PutItem(input)
+  
+  if err != nil {
+      log.Println("Got error calling PutItem")
+      serverError(err)
+      return nil, err
+  }
+  
+  return &cartSession, nil
 }
 
 // Function used to call other lambda functions
