@@ -101,7 +101,6 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   isItemInCart := false 
   for i, item := range cartSession.Cart {
     if item.Name == itemCart.Name {
-      itemCart.Quantity = itemCart.Quantity
       // If quantity = 0 then delete item
       if itemCart.Quantity == 0 {
         // If we only have one element in the array
@@ -114,6 +113,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
         }
       } else {
         cartSession.Cart[i].Quantity = itemCart.Quantity
+        cartSession.Cart[i].Cost = cartSession.Cart[i].Cost * float64(cartSession.Cart[i].Quantity)
       }
       isItemInCart = true
       break
@@ -160,8 +160,32 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
         // Find item in cart and update cost
         for j, item := range cartSession.Cart {
           if itemInventory.Name == item.Name {
-            cartSession.Cart[j].Cost = itemInventory.Cost
+            cartSession.Cart[j].Cost = float64(cartSession.Cart[j].Quantity) * itemInventory.Cost
           }
+        }
+      } else {
+        // Because we rely on the promo to calculate the item where the affectee==affected
+        // we need to go over this promo again and apply it
+        if itemCart.Name == promo.Affected.Name {
+          
+          itemInventory := new(Item)
+          inventoryString := getUrl("/item/"+itemCart.Name)
+          err = json.Unmarshal(inventoryString, itemInventory)
+          if err != nil {
+            return serverError(err)
+          }
+          
+          // Calculating the affectee cost
+          costOfAffecteeItems := itemInventory.Cost * float64(promo.Affectee.Quantity)
+          quantityOfAffected := cartSession.Cart[i].Quantity - promo.Affectee.Quantity
+          var costOfAffectedItems float64
+          if promo.Affected.CostPtg != 0 {
+            // Calcuating the affected cost
+            costOfAffectedItems = float64(quantityOfAffected) * (itemInventory.Cost * promo.Affected.CostPtg)
+          } else {
+            costOfAffectedItems = float64(quantityOfAffected) * promo.Affected.CostFixed
+          }
+          cartSession.Cart[i].Cost = costOfAffecteeItems + costOfAffectedItems
         }
       }
     }
@@ -177,7 +201,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   // impact on the performance
   cartSession.Total = 0
   for _, item := range cartSession.Cart {
-    cartSession.Total += (item.Cost * float64(item.Quantity))
+    cartSession.Total += item.Cost
   }
   
   // Update Cart Session
