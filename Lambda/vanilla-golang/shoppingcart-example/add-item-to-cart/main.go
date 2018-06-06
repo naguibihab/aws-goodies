@@ -119,8 +119,6 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   if itemInventory.Stock < (requestBody.Quantity + itemCart.Quantity) {
     log.Println("Error: Not enough stock",itemInventory.Stock,requestBody.Quantity,itemCart.Quantity)
     return notEnoughStockError()
-  } else {
-    itemCart.Cost = itemInventory.Cost
   }
   
   // Get the item from cart array
@@ -135,11 +133,13 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   if itemIndexInCart == -1 {
     itemCart.Name = requestBody.Name
     itemCart.Quantity = requestBody.Quantity
+    itemCart.Cost = float64(itemCart.Quantity) * itemInventory.Cost
   }
   
   // Step 2.2: Update cart
   if itemIndexInCart > -1 {
     cartSession.Cart[itemIndexInCart].Quantity += itemCart.Quantity
+    cartSession.Cart[itemIndexInCart].Cost += (cartSession.Cart[itemIndexInCart].Cost * float64(itemCart.Quantity)) 
   } else {
     cartSession.Cart = append(cartSession.Cart, *itemCart)
   }
@@ -173,25 +173,41 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
       if item.Name == promo.Affected.Name {
         // If an item in the cart can be affected by the promo
         // then start investigating if we have the affectee
+        
+        // If the item is the affected and affectee
         if item.Name == promo.Affectee.Name {
-          // If the item is the affected and affectee
-          if promo.Affected.CostPtg != 0 {
-            cartSession.Cart[i].Cost *= promo.Affected.CostPtg
-          } else {
-            cartSession.Cart[i].Cost = promo.Affected.CostFixed
+          // If the item does not exceed affectee quantity then there is no affected
+          if item.Quantity <= promo.Affectee.Quantity {
+            continue OUTER
           }
+          // then modify the affected's cost without
+          // modifying the affectee
+          
+          // Calculating the affectee cost
+          costOfAffecteeItems := itemInventory.Cost * float64(promo.Affectee.Quantity)
+          quantityOfAffected := cartSession.Cart[i].Quantity - promo.Affectee.Quantity
+          var costOfAffectedItems float64
+          if promo.Affected.CostPtg != 0 {
+            // Calcuating the affected cost
+            costOfAffectedItems = float64(quantityOfAffected) * (itemInventory.Cost * promo.Affected.CostPtg)
+          } else {
+            costOfAffectedItems = float64(quantityOfAffected) * promo.Affected.CostFixed
+          }
+          cartSession.Cart[i].Cost = costOfAffecteeItems + costOfAffectedItems
+          
           // Add promo to cart
           cartSession.Promos = append(cartSession.Promos, promo)
           continue OUTER
+          
         } else {
           for _, subItem := range cartSession.Cart {
-            if subItem.Name == promo.Affectee.Name {
-              // We have both the affected & affectee
-              // time to apply the promo affect
+            // If we have the affectee & its quantity is equal or higher than promo
+            if subItem.Name == promo.Affectee.Name && subItem.Quantity >= promo.Affectee.Quantity {
+              // Apply the promo
               if promo.Affected.CostPtg != 0 {
                 cartSession.Cart[i].Cost *= promo.Affected.CostPtg
               } else {
-                cartSession.Cart[i].Cost = promo.Affected.CostFixed
+                cartSession.Cart[i].Cost = float64(cartSession.Cart[i].Quantity) * promo.Affected.CostFixed
               }
               // Add promo to cart
               cartSession.Promos = append(cartSession.Promos, promo)
@@ -210,7 +226,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   // impact on the performance
   cartSession.Total = 0
   for _, item := range cartSession.Cart {
-    cartSession.Total += (item.Cost * float64(item.Quantity))
+    cartSession.Total += item.Cost
   }
   
   // Update Cart Session
