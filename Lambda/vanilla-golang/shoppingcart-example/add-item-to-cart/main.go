@@ -138,7 +138,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     cartSession.Cart = append(cartSession.Cart, *itemCart)
   } else {
     cartSession.Cart[itemIndexInCart].Quantity += requestBody.Quantity
-    cartSession.Cart[itemIndexInCart].Cost += (itemCart.Cost * float64(requestBody.Quantity)) 
+    cartSession.Cart[itemIndexInCart].Cost += (itemCart.Cost/float64(itemCart.Quantity)) * float64(requestBody.Quantity) 
   }
   
   // Step 3: Apply promotions
@@ -154,16 +154,24 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   OUTER:
   for i, item := range cartSession.Cart {
     for _, promo := range promotions {
-      // Skip applied promos
+      // Skip applied promos if they do not apply to the same
+      // UNLESS it's a promo where the affected and the affectee are the same
       alreadyApplied := false
+      skippable := false
       for _, appliedPromo := range cartSession.Promos {
         if promo.UUID == appliedPromo.UUID {
           alreadyApplied = true
+          if appliedPromo.Affectee.Name != appliedPromo.Affected.Name {
+            skippable = false
+          } else {
+            skippable = true
+          }
           break
-        } 
+        }
       }
-      if alreadyApplied {
+      if alreadyApplied && skippable {
         alreadyApplied = false
+        skippable = false
         continue
       }
       
@@ -193,7 +201,9 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
           cartSession.Cart[i].Cost = costOfAffecteeItems + costOfAffectedItems
           
           // Add promo to cart
-          cartSession.Promos = append(cartSession.Promos, promo)
+          if !alreadyApplied {
+            cartSession.Promos = append(cartSession.Promos, promo)
+          }
           continue OUTER
           
         } else {
