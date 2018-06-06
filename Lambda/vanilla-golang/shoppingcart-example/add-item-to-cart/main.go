@@ -130,19 +130,15 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     return notEnoughStockError()
   }
   
-  // if item isn't found in cart then create it
+  // Step 2.2 if item isn't found in cart then create it & update cart
   if itemIndexInCart == -1 {
     itemCart.Name = requestBody.Name
     itemCart.Quantity = requestBody.Quantity
     itemCart.Cost = float64(itemCart.Quantity) * itemInventory.Cost
-  }
-  
-  // Step 2.2: Update cart
-  if itemIndexInCart > -1 {
-    cartSession.Cart[itemIndexInCart].Quantity += itemCart.Quantity
-    cartSession.Cart[itemIndexInCart].Cost += (cartSession.Cart[itemIndexInCart].Cost * float64(itemCart.Quantity)) 
-  } else {
     cartSession.Cart = append(cartSession.Cart, *itemCart)
+  } else {
+    cartSession.Cart[itemIndexInCart].Quantity += requestBody.Quantity
+    cartSession.Cart[itemIndexInCart].Cost += (itemCart.Cost * float64(requestBody.Quantity)) 
   }
   
   // Step 3: Apply promotions
