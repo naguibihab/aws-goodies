@@ -19,8 +19,21 @@ type Item struct {
   Cost float64 `json:"cost"`
 }
 
+type Affectee struct {
+  Name string `json:"name"`
+  Quantity int `json:"quantity"`
+}
+
+type Affected struct {
+  Name  string `json:"name"`
+  CostPtg float64 `json:"costPtg"`
+  CostFixed float64 `json:"costFixed"`
+}
+
 type Promotion struct {
   UUID string `json:"uuid"`
+  Affectee Affectee `json:"affectee"`
+  Affected Affected `json:"affected"`
 }
 
 type CartSession struct {
