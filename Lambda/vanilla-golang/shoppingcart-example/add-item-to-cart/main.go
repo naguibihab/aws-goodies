@@ -115,12 +115,6 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     return serverError(err)
   }
   
-  // Check if quantity exceeds stock
-  if itemInventory.Stock < (requestBody.Quantity + itemCart.Quantity) {
-    log.Println("Error: Not enough stock",itemInventory.Stock,requestBody.Quantity,itemCart.Quantity)
-    return notEnoughStockError()
-  }
-  
   // Get the item from cart array
   itemIndexInCart := -1
   for i, item := range cartSession.Cart {
@@ -129,6 +123,13 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
         itemIndexInCart = i
     }
   }
+  
+  // Check if quantity exceeds stock
+  if itemInventory.Stock < (requestBody.Quantity + itemCart.Quantity) {
+    log.Println("Error: Not enough stock",itemInventory.Stock,requestBody.Quantity,itemCart.Quantity)
+    return notEnoughStockError()
+  }
+  
   // if item isn't found in cart then create it
   if itemIndexInCart == -1 {
     itemCart.Name = requestBody.Name
