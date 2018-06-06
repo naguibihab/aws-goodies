@@ -165,12 +165,10 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
           break
         } 
       }
-      log.Println("Iterating over promo ",promo,alreadyApplied)
       if alreadyApplied {
         alreadyApplied = false
         continue
       }
-      log.Println("Reach")
       
       if item.Name == promo.Affected.Name {
         // If an item in the cart can be affected by the promo
@@ -183,7 +181,6 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
             cartSession.Cart[i].Cost = promo.Affected.CostFixed
           }
           // Add promo to cart
-          log.Println("Applying promo ",promo)
           cartSession.Promos = append(cartSession.Promos, promo)
           continue OUTER
         } else {
@@ -197,9 +194,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
                 cartSession.Cart[i].Cost = promo.Affected.CostFixed
               }
               // Add promo to cart
-              log.Println("Applying promo ",promo,cartSession.Promos)
               cartSession.Promos = append(cartSession.Promos, promo)
-              log.Println("Applied promo ",promo,cartSession.Promos)
               continue OUTER
             }
           }
@@ -218,6 +213,12 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     cartSession.Total += (item.Cost * float64(item.Quantity))
   }
   
+  // Update Cart Session
+  err = updateCart(svc, cartSession)
+  if err != nil {
+    return serverError(err)
+  }
+  
   // ************
   // Return
   // ************
@@ -232,6 +233,30 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     Body:       string(js),
     StatusCode: 200,
   }, nil
+}
+
+func updateCart(svc *dynamodb.DynamoDB, cartSession *CartSession) (error) {
+  
+ // Add new cart session in database
+  av, err := dynamodbattribute.MarshalMap(cartSession)
+  if err != nil {
+      log.Println("Got error marshalling map")
+      return err
+  }
+  
+  input := &dynamodb.PutItemInput{
+      Item: av,
+      TableName: aws.String("Cart"),
+  }
+  
+  _, err = svc.PutItem(input)
+  
+  if err != nil {
+      log.Println("Got error calling PutItem")
+      return err
+  }
+  
+  return nil
 }
 
 func addCart(svc *dynamodb.DynamoDB) (*CartSession, error) {
