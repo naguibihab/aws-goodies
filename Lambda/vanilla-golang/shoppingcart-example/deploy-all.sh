@@ -25,3 +25,11 @@ cd ../
 cd get-inventory
 bash deploy.sh
 cd ../
+
+cd add-item-to-inventory
+bash deploy.sh
+cd ../
+
+cd delete-item-from-inventory
+bash deploy.sh
+cd ../

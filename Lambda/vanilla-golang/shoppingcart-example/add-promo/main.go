@@ -113,7 +113,7 @@ func addPromo(svc *dynamodb.DynamoDB, promo *Promotion) (*Promotion, error) {
 
   promo.UUID = uid.String()
 
-  // Add new cart session in database
+  // Add new promotion in database
   av, err := dynamodbattribute.MarshalMap(promo)
   if err != nil {
     log.Println("Got error marshalling map")
