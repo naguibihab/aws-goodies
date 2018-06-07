@@ -10,7 +10,7 @@
 			"description": "",
 			"item": [
 				{
-					"name": "Get Item From Inventory",
+					"name": "Get an item from inventory",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -24,19 +24,73 @@
 							"raw": "{\n  \"name\": \"Belts\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/item/Belts",
+							"raw": "{{base_url}}/item/{{itemname}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"item",
-								"Belts"
+								"{{itemname}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an item from inventory",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{base_url}}/item/{{itemname}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"item",
+								"{{itemname}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all items",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Belts\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/item/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"item",
+								""
 							]
 						}
 					},
 					"response": [
 						{
-							"id": "5d2a9dc6-5511-44e7-b2b1-f8b92a0a7f9d",
+							"id": "f7ca6f5f-6269-40b7-aaef-385e679c8641",
 							"name": "GetItem",
 							"originalRequest": {
 								"method": "GET",
@@ -119,7 +173,7 @@
 							"body": "{\"name\":\"Belts\",\"stock\":10,\"price\":20}"
 						},
 						{
-							"id": "9da7af7f-4c98-41ec-aada-e3a299a9b796",
+							"id": "64d50bdb-c437-464e-886d-52ceb09b8e02",
 							"name": "Item doesn't exist",
 							"originalRequest": {
 								"method": "GET",
@@ -202,6 +256,48 @@
 							"body": "{\"name\":\"\",\"stock\":0,\"price\":0}"
 						}
 					]
+				},
+				{
+					"name": "Add or modify Item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "195abc7d-9d72-45ea-95d5-3161af4ebccd",
+								"type": "text/javascript",
+								"exec": [
+									"var json = pm.response.json();",
+									"var itemname = json.name;",
+									"// Config",
+									"pm.environment.set(\"itemname\", itemname);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"stock\": 50,\n    \"cost\": 20\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/item/Flipflops",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"item",
+								"Flipflops"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
