@@ -6,6 +6,7 @@ import (
   "github.com/aws/aws-lambda-go/lambda"
   "io/ioutil"
   "log"
+  "os"
   "net/http"
 
   "github.com/aws/aws-sdk-go/aws"
@@ -14,7 +15,7 @@ import (
   "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
 
-const baseUrl = "https://tpu6ofm6o6.execute-api.us-west-2.amazonaws.com/dev"
+var baseUrl = os.Getenv("APIURL")
 
 type Item struct {
   Name     string  `json:"name"`
