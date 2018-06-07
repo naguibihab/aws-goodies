@@ -2,6 +2,9 @@
 
 This is an example using golang with Lambda and DynamoDB to create a simple shopping cart API
 
+## Design
+[Flow charts & ER](https://www.lucidchart.com/documents/view/d9339a6f-3946-49ed-b478-2f115547733c/0)
+
 ## Usage
 To deploy a function run deploy.sh script located in the folder of that function
 
