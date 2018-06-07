@@ -77,8 +77,6 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   
   cartSession := new(CartSession)
   itemCart := new(Item)
-  itemCart.Name = requestBody.Name
-  itemCart.Quantity = requestBody.Quantity
   
   // ************
   // Operation
@@ -98,27 +96,37 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   // Step 2: Modify cart array
   
   // Get item from cart
-  isItemInCart := false 
+  isItemInCart := false
+  
+  // Because it would be dangerous to update an array we're iterating on
+  // we need to use a temporary array
+  tempCart := cartSession.Cart
   for i, item := range cartSession.Cart {
-    if item.Name == itemCart.Name {
-      // If quantity = 0 then delete item
-      if itemCart.Quantity == 0 {
+    if item.Name == requestBody.Name {
+      itemCart = &item
+      // Modify cart
+      itemCart.Quantity -= requestBody.Quantity
+      itemCart.Cost = itemCart.Cost * float64(itemCart.Quantity)
+      tempCart[i] = *itemCart
+      
+      // If quantity <= 0 then delete item
+      if itemCart.Quantity <= 0 {
         // If we only have one element in the array
         if len(cartSession.Cart) == 1 {
-          cartSession.Cart = nil
+          tempCart = nil
         } else {
           // Replace with the last one & chop off the last one
-          cartSession.Cart[i] = cartSession.Cart[len(cartSession.Cart)-1]
-          cartSession.Cart = cartSession.Cart[:len(cartSession.Cart)-1]
+          tempCart[i] = cartSession.Cart[len(cartSession.Cart)-1]
+          tempCart = cartSession.Cart[:len(cartSession.Cart)-1]
         }
-      } else {
-        cartSession.Cart[i].Quantity = itemCart.Quantity
-        cartSession.Cart[i].Cost = cartSession.Cart[i].Cost * float64(cartSession.Cart[i].Quantity)
       }
+      
       isItemInCart = true
       break
     }
   }
+  
+  cartSession.Cart = tempCart
   
   // if item isn't found in cart then return error
   if !isItemInCart {
@@ -133,6 +141,8 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   // Because it would be dangerous to update an array we're iterating on
   // we need to use a temporary array
   tempPromos := cartSession.Promos
+  
+  log.Println("itemCart",itemCart)
   
   for i, promo := range cartSession.Promos {
     if itemCart.Name == promo.Affectee.Name {
