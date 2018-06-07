@@ -162,9 +162,9 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
         if promo.UUID == appliedPromo.UUID {
           alreadyApplied = true
           if appliedPromo.Affectee.Name != appliedPromo.Affected.Name {
-            skippable = false
-          } else {
             skippable = true
+          } else {
+            skippable = false
           }
           break
         }
@@ -182,7 +182,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
         // If the item is the affected and affectee
         if item.Name == promo.Affectee.Name {
           // If the item does not exceed affectee quantity then there is no affected
-          if item.Quantity <= promo.Affectee.Quantity {
+          if item.Quantity + requestBody.Quantity <= promo.Affectee.Quantity {
             continue OUTER
           }
           // then modify the affected's cost without
