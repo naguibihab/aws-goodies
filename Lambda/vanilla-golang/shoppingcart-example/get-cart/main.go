@@ -1,12 +1,12 @@
 package main
 
 import (
+  "encoding/json"
+  "github.com/aws/aws-lambda-go/events"
+  "github.com/aws/aws-lambda-go/lambda"
   "log"
   "net/http"
-  "encoding/json"
-	"github.com/aws/aws-lambda-go/lambda"
-  "github.com/aws/aws-lambda-go/events"
-  
+
   "github.com/aws/aws-sdk-go/aws"
   "github.com/aws/aws-sdk-go/aws/session"
   "github.com/aws/aws-sdk-go/service/dynamodb"
@@ -14,49 +14,47 @@ import (
 )
 
 type Item struct {
-  Name string `json:"name"`
-  Quantity int `json:"quantity"`
-  Cost float64 `json:"cost"`
+  Name     string  `json:"name"`
+  Quantity int     `json:"quantity"`
+  Cost     float64 `json:"cost"`
 }
 
 type Affectee struct {
-  Name string `json:"name"`
-  Quantity int `json:"quantity"`
+  Name     string `json:"name"`
+  Quantity int    `json:"quantity"`
 }
 
 type Affected struct {
-  Name  string `json:"name"`
-  CostPtg float64 `json:"costPtg"`
+  Name      string  `json:"name"`
+  CostPtg   float64 `json:"costPtg"`
   CostFixed float64 `json:"costFixed"`
 }
 
 type Promotion struct {
-  UUID string `json:"uuid"`
+  UUID     string   `json:"uuid"`
   Affectee Affectee `json:"affectee"`
   Affected Affected `json:"affected"`
 }
 
 type CartSession struct {
-  Session string `json:"session"`
-  Cart []Item `json:"cart"`
-  Total float64 `json:"total"`
+  Session       string      `json:"session"`
+  Cart          []Item      `json:"cart"`
+  Total         float64     `json:"total"`
   PromosApplied []Promotion `json:"promos"`
 }
 
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-  
+
   // ************
   // Preparation
   // ************
-  log.Printf("Processing Lambda request %s\n", request.PathParameters)
-  
   sess, err := session.NewSession(&aws.Config{
     Region: aws.String("us-west-2")},
   )
-  
+
   // Create DynamoDB client
   svc := dynamodb.New(sess)
-  
+
   // ************
   // Operation
   // ************
@@ -64,7 +62,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     TableName: aws.String("Cart"),
     Key: map[string]*dynamodb.AttributeValue{
       "session": {
-          S: aws.String(request.PathParameters["session"]),
+        S: aws.String(request.PathParameters["session"]),
       },
     },
   })
@@ -72,9 +70,9 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     log.Println(err.Error())
     return serverError(err)
   }
-  
+
   cartSession := CartSession{}
-  
+
   err = dynamodbattribute.UnmarshalMap(result.Item, &cartSession)
   if err != nil {
     log.Printf("Failed to unmarshal Record")
@@ -82,9 +80,9 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   }
 
   if cartSession.Session == "" {
-      log.Println("Could not find cart session")
+    log.Println("Could not find cart session")
   }
-  
+
   // ************
   // Return
   // ************
@@ -92,7 +90,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
   if err != nil {
     return serverError(err)
   }
-  
+
   return events.APIGatewayProxyResponse{
     Headers:    map[string]string{"content-type": "application/json"},
     Body:       string(js),
@@ -103,11 +101,11 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 func serverError(err error) (events.APIGatewayProxyResponse, error) {
   log.Println(err.Error())
   return events.APIGatewayProxyResponse{
-      StatusCode: http.StatusInternalServerError,
-      Body:       http.StatusText(http.StatusInternalServerError),
+    StatusCode: http.StatusInternalServerError,
+    Body:       http.StatusText(http.StatusInternalServerError),
   }, nil
 }
 
 func main() {
-	lambda.Start(Handler)
+  lambda.Start(Handler)
 }

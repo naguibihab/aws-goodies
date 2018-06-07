@@ -1,43 +1,42 @@
 package main
 
 import (
+  "github.com/aws/aws-lambda-go/events"
+  "github.com/aws/aws-lambda-go/lambda"
   "log"
   "net/http"
-	"github.com/aws/aws-lambda-go/lambda"
-  "github.com/aws/aws-lambda-go/events"
-  
+
   "github.com/aws/aws-sdk-go/aws"
   "github.com/aws/aws-sdk-go/aws/session"
   "github.com/aws/aws-sdk-go/service/dynamodb"
 )
 
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-  
+
   // ************
   // Preparation
   // ************
-  log.Printf("Processing Lambda request %s\n", request.PathParameters)
-  
+
   sess, err := session.NewSession(&aws.Config{
     Region: aws.String("us-west-2")},
   )
   if err != nil {
     return serverError(err)
   }
-  
+
   // Create DynamoDB client
   svc := dynamodb.New(sess)
-  
+
   // ************
   // Operation
   // ************
   input := &dynamodb.DeleteItemInput{
-      Key: map[string]*dynamodb.AttributeValue{
-          "uuid": {
-              S: aws.String(request.PathParameters["uuid"]),
-          },
+    Key: map[string]*dynamodb.AttributeValue{
+      "uuid": {
+        S: aws.String(request.PathParameters["uuid"]),
       },
-      TableName: aws.String("Promotion"),
+    },
+    TableName: aws.String("Promotion"),
   }
 
   _, err = svc.DeleteItem(input)
@@ -46,7 +45,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
     log.Println("Got error calling DeleteItem")
     return serverError(err)
   }
-  
+
   // ************
   // Return
   // ************
@@ -60,11 +59,11 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 func serverError(err error) (events.APIGatewayProxyResponse, error) {
   log.Println(err.Error())
   return events.APIGatewayProxyResponse{
-      StatusCode: http.StatusInternalServerError,
-      Body:       http.StatusText(http.StatusInternalServerError),
+    StatusCode: http.StatusInternalServerError,
+    Body:       http.StatusText(http.StatusInternalServerError),
   }, nil
 }
 
 func main() {
-	lambda.Start(Handler)
+  lambda.Start(Handler)
 }
