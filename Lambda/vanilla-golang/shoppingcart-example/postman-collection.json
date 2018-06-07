@@ -1,0 +1,1319 @@
+{
+	"info": {
+		"_postman_id": "92569a9c-1fc7-4410-ab82-254fd0bdb048",
+		"name": "Golang ShoppingCart example",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Item",
+			"description": "",
+			"item": [
+				{
+					"name": "Get Item From Inventory",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Belts\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/item/Belts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"item",
+								"Belts"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "5d2a9dc6-5511-44e7-b2b1-f8b92a0a7f9d",
+							"name": "GetItem",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"disabled": false
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Belts\"\n}"
+								},
+								"url": {
+									"raw": "https://tpu6ofm6o6.execute-api.us-west-2.amazonaws.com/dev/item/Belts",
+									"protocol": "https",
+									"host": [
+										"tpu6ofm6o6",
+										"execute-api",
+										"us-west-2",
+										"amazonaws",
+										"com"
+									],
+									"path": [
+										"dev",
+										"item",
+										"Belts"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "keep-alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "38",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 05 Jun 2018 12:22:58 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "X-Amzn-Trace-Id",
+									"value": "Root=1-5b1680a2-3cde8872cbe708374c4f7f52",
+									"name": "X-Amzn-Trace-Id",
+									"description": "Custom header"
+								},
+								{
+									"key": "x-amz-apigw-id",
+									"value": "IAkJUGcAPHcFfBQ=",
+									"name": "x-amz-apigw-id",
+									"description": "Custom header"
+								},
+								{
+									"key": "x-amzn-RequestId",
+									"value": "2e51dd8f-68bb-11e8-9545-f3dd299e9d9e",
+									"name": "x-amzn-RequestId",
+									"description": "Custom header"
+								}
+							],
+							"cookie": [],
+							"body": "{\"name\":\"Belts\",\"stock\":10,\"price\":20}"
+						},
+						{
+							"id": "9da7af7f-4c98-41ec-aada-e3a299a9b796",
+							"name": "Item doesn't exist",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"disabled": false
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Belts\"\n}"
+								},
+								"url": {
+									"raw": "https://tpu6ofm6o6.execute-api.us-west-2.amazonaws.com/dev/item/Belts",
+									"protocol": "https",
+									"host": [
+										"tpu6ofm6o6",
+										"execute-api",
+										"us-west-2",
+										"amazonaws",
+										"com"
+									],
+									"path": [
+										"dev",
+										"item",
+										"Belts"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "keep-alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Length",
+									"value": "31",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 05 Jun 2018 12:22:37 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "X-Amzn-Trace-Id",
+									"value": "Root=1-5b16808c-556527d58ddb116c1c38c6fb",
+									"name": "X-Amzn-Trace-Id",
+									"description": "Custom header"
+								},
+								{
+									"key": "x-amz-apigw-id",
+									"value": "IAkF9GT0PHcF91Q=",
+									"name": "x-amz-apigw-id",
+									"description": "Custom header"
+								},
+								{
+									"key": "x-amzn-RequestId",
+									"value": "21877aea-68bb-11e8-842d-3b495cc8a8e9",
+									"name": "x-amzn-RequestId",
+									"description": "Custom header"
+								}
+							],
+							"cookie": [],
+							"body": "{\"name\":\"\",\"stock\":0,\"price\":0}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"description": "",
+			"item": [
+				{
+					"name": "Scenarios",
+					"description": "",
+					"item": [
+						{
+							"name": "Scenario 1 Promo",
+							"description": "",
+							"item": [
+								{
+									"name": "Add New Cart with 2 Trousers",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "42f6a586-3891-46f1-8931-58548fbc82f3",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Config",
+													"pm.environment.set(\"session\", session);",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Name\"] = cart[0].name === 'Trousers';",
+													"    tests[\"Quantity\"] = cart[0].quantity === 2;",
+													"    tests[\"Cost\"] = cart[0].cost === 140;",
+													"}",
+													""
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Trousers\",\n\t\"quantity\": 2\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Add 1 Belt",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "92101d9c-70aa-4ca0-92fc-71c76999b666",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Name\"] = cart[1].name === 'Belts';",
+													"    tests[\"Quantity\"] = cart[1].quantity === 1;",
+													"    tests[\"Cost\"] = cart[1].cost === 17;",
+													"}",
+													""
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Belts\",\n\t\"quantity\": 1\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/{{session}}",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												"{{session}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Remove Trousers",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "ca1d0b53-482d-4660-b63e-913458e98351",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Trousers are not in cart\"] = !responseBody.has(\"Trousers\");",
+													"}"
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Trousers\",\n\t\"quantity\": 2\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/{{session}}",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												"{{session}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Remove Belt",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "04d95cdd-c15d-4a0d-a9fb-5ff9a49c8595",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Tests",
+													"tests[\"Cart is empty\"] = cart === null"
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Belts\",\n\t\"quantity\": 1\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/{{session}}",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												"{{session}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "6086892c-dcc0-40b8-879a-5d7bb376d8ab",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "c6ca5e36-d7ea-45c8-91f0-1e4c87a01d30",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Scenario 2 Self Promo",
+							"description": "",
+							"item": [
+								{
+									"name": "Add New Cart with 3 Shirts",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "349f2e69-867f-4a77-a28b-39a26eff5956",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Config",
+													"pm.environment.set(\"session\", session);",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Name\"] = cart[0].name === 'Shirts';",
+													"    tests[\"Quantity\"] = cart[0].quantity === 3;",
+													"    tests[\"Cost with promo\"] = cart[0].cost === 165;",
+													"}"
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Shirts\",\n\t\"quantity\": 3\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Add 1 more shirt",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "5b78b3e4-b677-4621-b004-1869fe66b268",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Quantity\"] = cart[0].quantity === 4;",
+													"    tests[\"Cost with promo\"] = cart[0].cost === 210;",
+													"}"
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Shirts\",\n\t\"quantity\": 1\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/{{session}}",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												"{{session}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Remove 2 shirts",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "61c37c88-522a-4fce-b890-5660d34344c4",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Quantity\"] = cart[0].quantity === 2;",
+													"    tests[\"Cost without promo\"] = cart[0].cost === 120;",
+													"}"
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Shirts\",\n\t\"quantity\": 2\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/{{session}}",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												"{{session}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "c2b6c0c7-6c27-43a0-b3ea-accbc92b4ea3",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "c4a25520-e343-4eb4-a77a-9eac5d59ce02",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Scenario 3 Self Promo",
+							"description": "",
+							"item": [
+								{
+									"name": "Add New Cart with 4 Thongs",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "95af7aa6-ae90-459b-9f84-eae5a937e8f7",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Config",
+													"pm.environment.set(\"session\", session);",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Name\"] = cart[0].name === 'Thongs';",
+													"    tests[\"Quantity\"] = cart[0].quantity === 4;",
+													"    tests[\"Cost\"] = cart[0].cost === 30;",
+													"}",
+													""
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Thongs\",\n\t\"quantity\": 4\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												""
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "e3d0557f-53c8-4c0b-b60f-1ea071c61ef9",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "e4c0788f-73a2-4cb8-8c3f-5ad40c1e7fe5",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Scenario 4 No Promo",
+							"description": "",
+							"item": [
+								{
+									"name": "Add New Cart with 2 Shirts",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "f2eefeb7-f149-428f-8c67-56cf85e6889c",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Config",
+													"pm.environment.set(\"session\", session);",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Name\"] = cart[0].name === 'Shirts';",
+													"    tests[\"Quantity\"] = cart[0].quantity === 2;",
+													"    tests[\"Cost\"] = cart[0].cost === 120;",
+													"}",
+													""
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Shirts\",\n\t\"quantity\": 2\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												""
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "ba0c009f-4795-44b4-87b3-73757514cdc7",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "4e499006-90df-4f96-a8ca-0383b8505b73",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Scenario 5 No Promo",
+							"description": "",
+							"item": [
+								{
+									"name": "Add New Cart with 1 Trouser",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "b911c45e-5040-4de2-bcbe-e93a03e2e621",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Config",
+													"pm.environment.set(\"session\", session);",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Name\"] = cart[0].name === 'Trousers';",
+													"    tests[\"Quantity\"] = cart[0].quantity === 1;",
+													"    tests[\"Cost\"] = cart[0].cost === 70;",
+													"}",
+													""
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Trousers\",\n\t\"quantity\": 1\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Add 1 Belt",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "5bc3addc-adfe-46f2-ad09-9fa0b9f4a752",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Name\"] = cart[1].name === 'Belts';",
+													"    tests[\"Quantity\"] = cart[1].quantity === 1;",
+													"    tests[\"Cost\"] = cart[1].cost === 20;",
+													"}",
+													""
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Belts\",\n\t\"quantity\": 1\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/{{session}}",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												"{{session}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "6086892c-dcc0-40b8-879a-5d7bb376d8ab",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "c6ca5e36-d7ea-45c8-91f0-1e4c87a01d30",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Scenario 6 Exceed Stock",
+							"description": "",
+							"item": [
+								{
+									"name": "Add New Cart with 9 Belts",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "51fd1950-2c2c-4da4-8754-c17cd4c8a62d",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Config",
+													"pm.environment.set(\"session\", session);",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Name\"] = cart[0].name === 'Belts';",
+													"    tests[\"Quantity\"] = cart[0].quantity === 9;",
+													"    tests[\"Cost\"] = cart[0].cost === 180;",
+													"}",
+													""
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Belts\",\n\t\"quantity\": 9\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Add 2 more Belts",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "4f838399-9905-4419-951a-8c1b0b890ab2",
+												"type": "text/javascript",
+												"exec": [
+													"pm.test(\"Status code is Forbidden 403\", function () {",
+													"    pm.response.to.have.status(403);",
+													"});"
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Belts\",\n\t\"quantity\": 2\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/{{session}}",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												"{{session}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Cart",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "c9a99df6-d4ce-4b5d-a320-b2cbc0924b61",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Name\"] = cart[0].name === 'Belts';",
+													"    tests[\"Quantity\"] = cart[0].quantity === 9;",
+													"    tests[\"Cost\"] = cart[0].cost === 180;",
+													"}",
+													""
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {},
+										"url": {
+											"raw": "{{base_url}}/cart/{{session}}",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												"{{session}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Add 1 more Belt",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "b280b903-ae24-4e00-90b2-16ae371f7e72",
+												"type": "text/javascript",
+												"exec": [
+													"var json = pm.response.json();",
+													"var session = json.session",
+													"var cart = json.cart",
+													"// Tests",
+													"if(cart){",
+													"    tests[\"Name\"] = cart[0].name === 'Belts';",
+													"    tests[\"Quantity\"] = cart[0].quantity === 10;",
+													"    tests[\"Cost\"] = cart[0].cost === 200;",
+													"}",
+													""
+												]
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\": \"Belts\",\n\t\"quantity\": 1\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/cart/{{session}}",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"cart",
+												"{{session}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"_postman_isSubFolder": true
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Add New Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "57e46e83-8567-4425-91a6-546d582556c2",
+								"type": "text/javascript",
+								"exec": [
+									"var json = pm.response.json();",
+									"var session = json.session",
+									"// Config",
+									"pm.environment.set(\"session\", session);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Shirts\",\n\t\"quantity\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/cart/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Item To Cart",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Shirts\",\n\t\"quantity\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/cart/{{session}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"{{session}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Item From Cart",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Shirts\",\n\t\"quantity\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/cart/{{session}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"{{session}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{base_url}}/cart/{{session}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"{{session}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Promo",
+			"description": "",
+			"item": [
+				{
+					"name": "Get Promo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{base_url}}/promo/{{uuid}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"promo",
+								"{{uuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Promo",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{base_url}}/promo/{{uuid}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"promo",
+								"{{uuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Promo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fdc8e8f4-d041-4e43-8c47-646576101d09",
+								"type": "text/javascript",
+								"exec": [
+									"var json = pm.response.json();",
+									"var uuid = json.uuid",
+									"// Config",
+									"pm.environment.set(\"uuid\", uuid);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"affecteeName\":\"test\",\n\t\"affecteeQuantity\": 2,\n\t\"affectedName\":\"test2\",\n\t\"affectedCostPtg\":null,\n\t\"affectedCostFixed\":5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/promo",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"promo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Promos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{base_url}}/promo/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"promo",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "3280729a-6d5a-4fe8-8128-bedc6f592279",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "bb88dacd-e602-4c6c-b4e5-a90ab5d8dbf2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
