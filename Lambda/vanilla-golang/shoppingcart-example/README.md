@@ -5,6 +5,9 @@ This is an example using golang with Lambda and DynamoDB to create a simple shop
 ## Design
 Flow charts & ER diagrams are included as a png image
 
+## Api Gateway
+There are some exported files that can be used to create the Api Gateway in AWS
+
 ## Usage
 To deploy a function run `deploy.sh` script located in the folder of that function or run `deploy-all.sh` to deploy all scripts
 
