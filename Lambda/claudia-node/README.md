@@ -54,6 +54,7 @@ Make sure to replace: `sg-id`, `subnet-*`, `my-aws-profile`, `my-lambda`
 6: If you're however creating a lambda function to be called by an API Gateway then you'd need to do the following two steps:
 
 6.a: On the folder you've created run `npm install claudia-api-builder`
+
 6.b: Now use the scripts mentioned in step 5 but replace the create script with this one: `claudia create --region us-west-2 --api-module main --version dev --security-group-ids sg-id --subnet-ids subnet-1,subnet-2,subnet-3 --policies policies/*.json --set-env-from-json env.json --profile my-aws-profile`
 
 7: Add a README.md file using this template
