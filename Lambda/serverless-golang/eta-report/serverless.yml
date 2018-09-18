@@ -1,0 +1,155 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: eta-report # NOTE: update this with your service name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+frameworkVersion: ">=1.28.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: go1.x
+
+# you can overwrite defaults here
+#  stage: dev
+  region: us-west-2
+
+# you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+      -  Effect: "Allow"
+         Action:
+           - "s3:ListBucket"
+         # You can put CloudFormation syntax in here.  No one will judge you.
+         # Remember, this all gets translated to CloudFormation.
+         Resource:
+           Fn::Join:
+             - ""
+             - - "arn:aws:s3:::"
+               - ${file(common.env.yml):s3_bucket}
+      -  Effect: "Allow"
+         Action:
+           - "s3:PutObject"
+         Resource: 
+           Fn::Join:
+             - ""
+             - - "arn:aws:s3:::"
+               - ${file(common.env.yml):s3_bucket}
+               - "/*"
+      -  Effect: "Allow"
+         Action:
+           - "s3:PutObjectAcl"
+         Resource: 
+           Fn::Join:
+             - ""
+             - - "arn:aws:s3:::"
+               - ${file(common.env.yml):s3_bucket}
+               - "/*"
+
+# you can define service wide environment variables here
+  environment:
+    mysql_db_con: ${file(mysql.env.yml):db_con}
+    
+    orders_db_con: ${file(orders/orders.env.yml):db_con}
+    orders_db_name: ${file(orders/orders.env.yml):db_name}
+    orders_orders_collection: ${file(orders/orders.env.yml):orders_collection}
+
+    events_db_con: ${file(events/events.env.yml):db_con}
+    events_db_name: ${file(events/events.env.yml):db_name}
+    events_events_collection: ${file(events/events.env.yml):events_collection}
+    
+    s3_environment: ${file(common.env.yml):s3_environment}
+    s3_bucket: ${file(common.env.yml):s3_bucket}
+    s3_dir: ${file(common.env.yml):s3_dir}
+
+package:
+ exclude:
+   - ./**
+ include:
+   - ./bin/**
+
+functions:
+  calc:
+    handler: bin/calc
+    events:
+      - http:
+          path: calc
+          method: get
+  orders:
+    handler: bin/orders
+    timeout: 20
+    events:
+      - http:
+          path: orders
+          method: get
+  events:
+    handler: bin/events
+    timeout: 20
+    events:
+      - http:
+          path: events
+          method: get
+  logs:
+    handler: bin/logs
+    timeout: 20
+    events:
+      - http:
+          path: logs
+          method: get
+
+#    The following are a few example events you can configure
+#    NOTE: Please make sure to change your handler code to work with those events
+#    Check the event documentation for details
+# events:
+#    events:
+#      - http:
+#          path: users/create
+#          method: get
+#      - s3: ${env:BUCKET}
+#      - schedule: rate(10 minutes)
+#      - sns: greeter-topic
+#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
+#      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
+#      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
+#      - iot:
+#          sql: "SELECT * FROM 'some_topic'"
+#      - cloudwatchEvent:
+#          event:
+#            source:
+#              - "aws.ec2"
+#            detail-type:
+#              - "EC2 Instance State-change Notification"
+#            detail:
+#              state:
+#                - pending
+#      - cloudwatchLog: '/aws/lambda/hello'
+#      - cognitoUserPool:
+#          pool: MyUserPool
+#          trigger: PreSignUp
+
+#    Define function environment variables here
+#    environment:
+#      variable2: value2
+
+# you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
